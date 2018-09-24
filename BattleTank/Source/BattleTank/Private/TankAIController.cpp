@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "TankAIController.h"
+#include "Public/TankAIController.h"
 #include "Engine/World.h"
 
 #include "TankPlayerController.h"
@@ -33,4 +33,20 @@ ATank* ATankAIController::GetPlayerTank() const {
 	else {
 		return nullptr;
 	}
+}
+
+void ATankAIController::Tick(float DeltaTime) {
+	Super::Tick(DeltaTime);
+	
+	/// Don't do anything if no controlled tank or no player controlled tank
+	auto Tank = GetControlledTank();
+	auto PlayerTank = GetPlayerTank();
+
+	if (!Tank || !PlayerTank) { return; }
+
+	/// Aim at the player
+	Tank->AimAt(PlayerTank->GetActorLocation());
+
+	/// Fire if ready
+
 }
