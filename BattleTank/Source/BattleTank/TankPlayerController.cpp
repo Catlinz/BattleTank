@@ -1,8 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankPlayerController.h"
-
 #include "Engine/World.h"
+#include "Public/Tank.h"
+
 
 ATank * ATankPlayerController::GetControlledTank() const 
 {
@@ -13,13 +14,9 @@ void ATankPlayerController::BeginPlay() {
 	Super::BeginPlay();
 
 	auto Tank = GetControlledTank();
-	if (Tank) {
-		UE_LOG(LogTemp, Warning, TEXT("TankPlayerController BeginPlay: %s"), *Tank->GetName());
+	if (!Tank) {
+		UE_LOG(LogTemp, Error, TEXT("%s failed to get controlled tank on play"), *Tank->GetName());
 	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("TankPlayerController BeginPlay"));
-	}
-	
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -77,7 +74,8 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVec
 		HitResult,
 		TraceStartLocation,
 		TraceEndLocation,
-		ECollisionChannel::ECC_Visibility
+		ECollisionChannel::ECC_Visibility,
+		FCollisionQueryParams(NAME_None, false, GetPawn())
 	)) {
 		out_HitLocation = HitResult.Location;
 		return true;
